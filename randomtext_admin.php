@@ -210,8 +210,9 @@ function randomtext_save($data) {
 	$sqldata = array();
 	$category_new = trim($data['randomtext_category_new']);
 	$sqldata['category'] = ($category_new) ? $category_new : $data['randomtext_category'];
-	$sqldata['text'] = trim($data['randomtext_text']);
+	$sqldata['text'] = trim(stripslashes($data['randomtext_text']));
 	$sqldata['user_id'] = $user_ID;
+	$sqldata['visible'] = $data['randomtext_visible'];
 	
 	if($randomtext_id)
 		$wpdb->update($table_name, $sqldata, array('randomtext_id'=>$randomtext_id));

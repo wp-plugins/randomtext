@@ -4,7 +4,7 @@
 Plugin name: Random Text
 Plugin URI: http://www.pantsonhead.com/wordpress/randomtext/
 Description: A widget to display randomized text on your site
-Version: 0.1.1
+Version: 0.1.2
 Author: Greg Jackson
 Author URI: http://www.pantsonhead.com
 

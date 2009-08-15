@@ -5,7 +5,7 @@ Requires at least: 2.8
 Tested up to: 2.8.4
 Stable tag: trunk
 
-Store and display random text by catgeory in sidebar widget or templates.
+Store and display random text by category in sidebar widget or templates.
 
 == Description ==
 
@@ -20,10 +20,15 @@ RandomText is a handy WordPress plugin that allows you to save, edit and delete 
 
 == Changelog ==
 
+= v0.1.2 2009/08/16 =
+
+Fixed editing issues
+Minor correction to readme.txt
+
 = v0.1.1 2009/08/14 =
 
-minor corrections to readme.txt
+Minor corrections to readme.txt
 
 = v0.1 2009/08/11 =
 
-initial release
+Initial release
