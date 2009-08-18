@@ -4,7 +4,7 @@
 Plugin name: Random Text
 Plugin URI: http://www.pantsonhead.com/wordpress/randomtext/
 Description: A widget to display randomized text on your site
-Version: 0.1.2
+Version: 0.1.3
 Author: Greg Jackson
 Author URI: http://www.pantsonhead.com
 
@@ -56,13 +56,12 @@ class randomtext extends WP_Widget {
 		extract($args);
 		$title = apply_filters('widget_title', empty($instance['title']) ? '' : $instance['title']);
 		$category = empty($instance['category']) ? '' : $instance['category'];
-		$footer = empty($instance['footer']) ? '' : $instance['footer'];
 		$snippet = $this->get_randomtext($category);
 		if($snippet!='') {
 			echo $before_widget;
 			if($title)
 				echo $before_title.$title.$after_title;
-			echo $snippet.$footer;
+			echo $instance['pretext'].$snippet.$instance['posttext'];
 			echo $after_widget;
 		}
 	}
@@ -71,7 +70,8 @@ class randomtext extends WP_Widget {
 	  $instance = $old_instance;
 	  $instance['title'] = strip_tags(stripslashes($new_instance['title']));
 		$instance['category'] = strip_tags(strip_tags(stripslashes($new_instance['category'])));
-		$instance['footer'] = stripslashes($new_instance['footer']);
+		$instance['pretext'] = $new_instance['pretext'];
+		$instance['posttext'] = $new_instance['posttext'];
 	  return $instance;
 	}
 	
@@ -97,7 +97,7 @@ class randomtext extends WP_Widget {
 		echo '</select></p>
 			<p>
 			<label for="'.$this->get_field_name('posttext').'">Post-Text: </label><br />
-			<input type="text" id="'.$this->get_field_id('posttext').'" name="'.$this->get_field_name('posttext').'" value="'.$instance['posttext'].'"/>
+			<input type="text" id="'.$this->get_field_id('posttext').'" name="'.$this->get_field_name('posttext').'" value="'.$posttext.'"/>
 			</p> ';
 	}
 	
