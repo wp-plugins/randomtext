@@ -40,7 +40,7 @@ function randomtext_error($text='An undefined error has occured.') {
 function randomtext_list() {
 	global $wpdb, $user_ID;
 	$table_name = $wpdb->prefix . 'randomtext';
-	$pageURL = '/wp-admin/options-general.php?page=randomtext';
+	$pageURL = 'options-general.php?page=randomtext';
 	$perpage = 20;
 	$cat=$_GET['cat'];
 	$author_id = intval($_GET['author_id']);
@@ -93,7 +93,7 @@ function randomtext_list() {
 	<?php echo randomtext_pagetitle(); ?>
 	<div class="tablenav">
 		<div class="alignleft actions">
-			<input type="submit" class="button-secondary action" id="randomtext_add" name="randomtext_add" value="Add New" onclick="location.href='/wp-admin/options-general.php?page=randomtext&action=new'"/>
+			<input type="submit" class="button-secondary action" id="randomtext_add" name="randomtext_add" value="Add New" onclick="location.href='options-general.php?page=randomtext&action=new'"/>
 			Category: <select id="randomtext_category" name="randomtext_category" onchange="javascript:window.location='<?php echo $pageURL.'&cat='; ?>'+(this.options[this.selectedIndex].value);">
 			<option value="">View all categories </option>
 			<?php echo randomtext_get_category_options($cat); ?>
@@ -195,7 +195,7 @@ function randomtext_edit($randomtext_id=0) {
 			</div>
 			</form>
 			
-			<p>Return to <a href="/wp-admin/options-general.php?page=randomtext">Random Text summary page</a>.</p>';
+			<p>Return to <a href="options-general.php?page=randomtext">Random Text summary page</a>.</p>';
 	}
   echo '</div>';	
 }
