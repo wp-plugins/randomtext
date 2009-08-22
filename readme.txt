@@ -26,6 +26,10 @@ RandomText is a handy WordPress plugin that allows you to save, edit and delete 
 
 == Changelog ==
 
+= v0.2.1 2009-08-22 =
+
+* Added database table check/error to admin page
+
 = v0.2 2009-08-22 =
 
 * Added random/rotation option

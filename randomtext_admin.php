@@ -57,7 +57,12 @@ function randomtext_list() {
 		$where = " WHERE user_id = $author_id";
 		$page_params .= '&author_id='.$author_id;
 	}
-	$totalrows = $wpdb->get_row("Select count(*) items FROM $table_name $where")->items;	
+	$item_count = $wpdb->get_row("Select count(*) items FROM $table_name $where");
+	if(isset($item_count->items)) {
+		$totalrows = 	$item_count->items;
+	} else {
+		echo '<h3>Achtung! The expected database table "<i>'.$table_name.'</i>" does not appear to exist.</h3>';
+	}
 	$rows = $wpdb->get_results("SELECT * FROM $table_name $where ORDER BY randomtext_id LIMIT $startrow, $perpage");
 		
 	$author = array();
