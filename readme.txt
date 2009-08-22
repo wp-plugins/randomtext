@@ -1,15 +1,16 @@
 === Random Text ===
 Contributors: pantsonhead
+Donate link: http://www.amazon.co.uk/gp/registry/1IX1RH4LFSY4W
 Tags: widget, plugin, sidebar, random, text
 Requires at least: 2.8
 Tested up to: 2.8.4
 Stable tag: trunk
 
-Store and display random text by category in sidebar widget or templates.
+Store and display random/rotated text by category in sidebar widget or templates.
 
 == Description ==
 
-RandomText is a handy WordPress plugin that allows you to save, edit and delete categorized text, and inject random text by category into the sidebar (via widget) or page body (via template tags). The sidebar widget allows you to set an optional Title, and text header and footer. You could say RandomText picks up where the Text widget left off. Whether you want to display random trivia, quotes, helpful hints, featured articles, or snippets of html, you can do it all easily with RandomText.
+RandomText is a handy WordPress plugin that allows you to save, edit and delete categorized text, and inject random/rotated text by category into the sidebar (via widget) or page body (via template tags). The sidebar widget allows you to set an optional Title, and text header and footer. You could say RandomText picks up where the Text widget left off. Whether you want to display random/rotated trivia, quotes, helpful hints, featured articles, or snippets of html, you can do it all easily with RandomText.
 
 == Installation ==
 
@@ -18,25 +19,35 @@ RandomText is a handy WordPress plugin that allows you to save, edit and delete 
 3. The Random Text widget can now be configured and used from the Appearance -> Widgets menu
 4. Text entries can be managed via from the Settings -> Random Text menu
 
+== Screenshots ==
+
+1. Sidebar widget options
+2. Text management page
+
 == Changelog ==
 
-= v0.1.4 2009/08/19 =
+= v0.2 2009-08-22 =
+
+* Added random/rotation option
+* Added screenshots
+
+= v0.1.4 2009-08-19 =
 
 * Fixed admin path bug
 
-= v0.1.3 2009/08/18 =
+= v0.1.3 2009-08-18 =
 
 * Fixed Pre-text/Post-text bug
 
-= v0.1.2 2009/08/16 =
+= v0.1.2 2009-08-16 =
 
 * Fixed editing issues
 * Minor correction to readme.txt
 
-= v0.1.1 2009/08/14 =
+= v0.1.1 2009-08-14 =
 
 * Minor corrections to readme.txt
 
-= v0.1 2009/08/11 =
+= v0.1 2009-08-11 =
 
 * Initial release

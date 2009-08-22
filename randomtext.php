@@ -4,7 +4,7 @@
 Plugin name: Random Text
 Plugin URI: http://www.pantsonhead.com/wordpress/randomtext/
 Description: A widget to display randomized text on your site
-Version: 0.1.4
+Version: 0.2
 Author: Greg Jackson
 Author URI: http://www.pantsonhead.com
 
@@ -35,20 +35,24 @@ class randomtext extends WP_Widget {
 		$this->WP_Widget('randomtext', 'Random Text', $widget_ops);
 	}
 
-	function get_randomtext($category='') {
+	function get_randomtext($category='', $random=false) {
 		global $wpdb;
 		$table_name = $wpdb->prefix . 'randomtext';
 		
 	  $sql = 'SELECT randomtext_id, text FROM '. $table_name." WHERE visible='yes' ";
 		$sql .= ($category!='') ? " AND category = '$category'" : '' ;
-		$sql .= ' ORDER BY timestamp, randomtext_id LIMIT 1 ';
+		if($random)
+			$sql .= ' ORDER BY RAND() LIMIT 1 ';
+		else
+			$sql .= ' ORDER BY timestamp, randomtext_id LIMIT 1 ';
 		$row = $wpdb->get_row($sql);
 		$snippet = $row->text;
 		
-		// update the timestamp of the row we just seleted
-		$sql = 'UPDATE '.$table_name.' SET timestamp = Now() WHERE randomtext_id = '.$row->randomtext_id;
-		$wpdb->query($sql);
-		
+		// update the timestamp of the row we just seleted (used by rotator, not by random)
+		if(!$random) {
+			$sql = 'UPDATE '.$table_name.' SET timestamp = Now() WHERE randomtext_id = '.$row->randomtext_id;
+			$wpdb->query($sql);
+		}
 		return $snippet;
 	}
 
@@ -56,7 +60,8 @@ class randomtext extends WP_Widget {
 		extract($args);
 		$title = apply_filters('widget_title', empty($instance['title']) ? '' : $instance['title']);
 		$category = empty($instance['category']) ? '' : $instance['category'];
-		$snippet = $this->get_randomtext($category);
+		$random = intval($instance['random']);
+		$snippet = $this->get_randomtext($category, $random);
 		if($snippet!='') {
 			echo $before_widget;
 			if($title)
@@ -72,6 +77,7 @@ class randomtext extends WP_Widget {
 		$instance['category'] = strip_tags(strip_tags(stripslashes($new_instance['category'])));
 		$instance['pretext'] = $new_instance['pretext'];
 		$instance['posttext'] = $new_instance['posttext'];
+		$instance['random'] = intval($new_instance['random']);
 	  return $instance;
 	}
 	
@@ -83,29 +89,39 @@ class randomtext extends WP_Widget {
 	  $category = htmlspecialchars($instance['category']);
 		$pretext = htmlspecialchars($instance['pretext']);
 		$posttext = htmlspecialchars($instance['posttext']);
+		${'random_'.intval($instance['random'])} = ' SELECTED';
   
 		echo '<p>
-			<label for="'.$this->get_field_name('title').'">Title: </label><br />
-			<input type="text" id="'.$this->get_field_id('title').'" name="'.$this->get_field_name('title').'" value="'.$title.'"/>
+				<label for="'.$this->get_field_name('title').'">Title: </label> 
+				<input type="text" id="'.$this->get_field_id('title').'" name="'.$this->get_field_name('title').'" value="'.$title.'"/>
 			</p><p>
-			<label for="'.$this->get_field_name('pretext').'">Pre-Text: </label><br />
-			<input type="text" id="'.$this->get_field_id('pretext').'" name="'.$this->get_field_name('pretext').'" value="'.$pretext.'"/>
+				<label for="'.$this->get_field_name('pretext').'">Pre-Text: </label> 
+				<input type="text" id="'.$this->get_field_id('pretext').'" name="'.$this->get_field_name('pretext').'" value="'.$pretext.'"/>
 			</p><p>
-			<label for="'.$this->get_field_name('category').'">Category: </label><br /><select id="'.$this->get_field_id('category').'" name="'.$this->get_field_name('category').'">
-			<option value="">All Categories </option>';
+				<label for="'.$this->get_field_name('category').'">Category: </label>
+				<select id="'.$this->get_field_id('category').'" name="'.$this->get_field_name('category').'">
+				<option value="">All Categories </option>';
 		echo randomtext_get_category_options($instance['category']);
 		echo '</select></p>
 			<p>
-			<label for="'.$this->get_field_name('posttext').'">Post-Text: </label><br />
-			<input type="text" id="'.$this->get_field_id('posttext').'" name="'.$this->get_field_name('posttext').'" value="'.$posttext.'"/>
-			</p> ';
+				<label for="'.$this->get_field_name('posttext').'">Post-Text: </label> 
+				<input type="text" id="'.$this->get_field_id('posttext').'" name="'.$this->get_field_name('posttext').'" value="'.$posttext.'"/>
+			</p>
+			<p>
+				<label for="'.$this->get_field_name('random').'">Selection: </label> 
+				<select id="'.$this->get_field_id('random').'" name="'.$this->get_field_name('random').'">
+				<option value="1" '.$random_1.'>Random</option>
+				<option value="0" '.$random_0.'>Rotation</option>
+				</select><br/>
+				<span class="description">Note: Random can be more intensive with large record sets, and some items may never appear.</span>
+			</p>'; 
 	}
 	
 }
 
-function randomtext($category){
+function randomtext($category, $random=FALSE){
 	$randomtext = new randomtext;
-	echo $randomtext->get_randomtext($category);
+	echo $randomtext->get_randomtext($category,$random);
 }
 
 function randomtext_init() {
