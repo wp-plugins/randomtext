@@ -19,12 +19,18 @@ RandomText is a handy WordPress plugin that allows you to save, edit and delete 
 3. The Random Text widget can now be configured and used from the Appearance -> Widgets menu
 4. Text entries can be managed via from the Settings -> Random Text menu
 
+Note: During installation, Random Text creates a new database table to store the entries by category  - you should see two test records after installation by clicking on the Settings -> Random Text menu.
+
 == Screenshots ==
 
 1. Sidebar widget options
 2. Text management page
 
 == Changelog ==
+
+= v0.2.2 2009-08-23 =
+
+* Added record id check before timestamp update 
 
 = v0.2.1 2009-08-22 =
 
