@@ -14,6 +14,8 @@ RandomText is a handy WordPress plugin that allows you to save, edit and delete 
 
 == Installation ==
 
+IMPORTANT: This plugin uses the WP_Widget class introduced in WordPress v2.8 and will not work with earlier versions of WordPress.
+
 1. Upload `randomtext.php` and `randomtext_admin.php` to the `/wp-content/plugins/` directory of your WordPress installation
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. The Random Text widget can now be configured and used from the Appearance -> Widgets menu
