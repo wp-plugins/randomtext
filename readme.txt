@@ -1,7 +1,7 @@
 === Random Text ===
 Contributors: pantsonhead
 Donate link: http://www.amazon.co.uk/gp/registry/1IX1RH4LFSY4W
-Tags: widget, plugin, sidebar, random, text
+Tags: widget, plugin, sidebar, random, text, quotes
 Requires at least: 2.8
 Tested up to: 2.8.4
 Stable tag: trunk
@@ -29,6 +29,11 @@ Note: During installation, Random Text creates a new database table to store the
 2. Text management page
 
 == Changelog ==
+
+= v0.2.3 2009-09-22 =
+
+* Added Bulk Insert option
+* Improved handling of "No Category" items
 
 = v0.2.2 2009-08-23 =
 

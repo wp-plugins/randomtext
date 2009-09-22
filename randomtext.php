@@ -4,7 +4,7 @@
 Plugin name: Random Text
 Plugin URI: http://www.pantsonhead.com/wordpress/randomtext/
 Description: A widget to display randomized text on your site
-Version: 0.2.2
+Version: 0.2.3
 Author: Greg Jackson
 Author URI: http://www.pantsonhead.com
 
@@ -133,11 +133,21 @@ function randomtext_get_category_options($category='') {
 	$table_name = $wpdb->prefix . 'randomtext';
 	$sql = 'SELECT category FROM '.$table_name.' GROUP BY category ORDER BY category';
 	$rows = $wpdb->get_results($sql);
-
+	
+	$option_nocategory = false;
+	$nocategory_name = 'No Category';
+	
 	foreach($rows as $row){
 		$selected = ($category==$row->category) ? 'SELECTED' : '';
-		$result .= '<option value="'.$row->category.'" '.$selected.'>'.$row->category.' </option>';
+		$categoryname = $row->category;		
+		if(trim($categoryname)==''){
+			$categoryname = $nocategory_name;
+			$option_nocategory = true;
+		}
+		$result .= '<option value="'.$row->category.'" '.$selected.'>'.$categoryname.' </option>';
 	}
+	if(!$option_nocategory)
+		$result = '<option value="">'.$nocategory_name.' </option>'.$result;
 	return $result;
 }
 

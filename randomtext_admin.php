@@ -180,8 +180,7 @@ function randomtext_edit($randomtext_id=0) {
 		<textarea name="randomtext_text" style="width: 80%; height: 100px;">'.apply_filters('format_to_edit',$row->text).'</textarea>
 		<h3>Category</h3>
 		<p>Select a category from the list or enter a new one.</p>
-		<label for="randomtext_category">Category: </label><select id="randomtext_category" name="randomtext_category">
-		<option value="">No Category </option>'; 
+		<label for="randomtext_category">Category: </label><select id="randomtext_category" name="randomtext_category">'; 
 	echo randomtext_get_category_options($row->category);
 	echo '</select></p>
 		<p><label for="randomtext_category_new">New Category: </label><input type="text" id="randomtext_category_new" name="randomtext_category_new"></p>';
@@ -194,8 +193,14 @@ function randomtext_edit($randomtext_id=0) {
 		
 		echo '<h3>Is visible.</h3>
 			<p><label for="randomtext_visible_yes"><input type="radio" id="randomtext_visible_yes" name="randomtext_visible" value="yes" '.$checked_yes.' /> Yes</label>&nbsp;&nbsp;&nbsp;&nbsp;
-			<label for="randomtext_visible_no"><input type="radio" id="randomtext_visible_no" name="randomtext_visible" value="no" '.$checked_no.' /> No</label></p>
-			<div class="submit">
+			<label for="randomtext_visible_no"><input type="radio" id="randomtext_visible_no" name="randomtext_visible" value="no" '.$checked_no.' /> No</label></p>';
+		if(!$randomtext_id) {
+			// don't offer Bulk Insert on edit
+			echo '<h3>Use Bulk Insert</h3>
+			<p><input type="radio" name="randomtext_bulkinsert" value="yes" /> Yes&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="randomtext_bulkinsert" value="no" checked="checked" /> No</p>
+			<small>Bulk insert will create a new record for each line (delimited by carriage return) within the text box above using the same category selected.<br />Empty lines will be ignored.</small>';
+		}
+		echo '<div class="submit">
 			<input class="button-primary" type="submit" name="randomtext_Save" value="Save Changes" />
 			</div>
 			</form>
@@ -215,14 +220,29 @@ function randomtext_save($data) {
 	$sqldata = array();
 	$category_new = trim($data['randomtext_category_new']);
 	$sqldata['category'] = ($category_new) ? $category_new : $data['randomtext_category'];
-	$sqldata['text'] = trim(stripslashes($data['randomtext_text']));
 	$sqldata['user_id'] = $user_ID;
 	$sqldata['visible'] = $data['randomtext_visible'];
 	
-	if($randomtext_id)
-		$wpdb->update($table_name, $sqldata, array('randomtext_id'=>$randomtext_id));
-	else
-		$wpdb->insert($table_name, $sqldata);
+	// check for "Bulk Insert"
+	if ($data['randomtext_bulkinsert'] == 'yes') {
+		// Split the data by carriage returns
+		$lines = preg_split("/[\n|\r]/", trim(stripslashes($data['randomtext_text'])));
+		foreach ($lines as $key=>$value) {
+			// Ignore empty lines
+			if (!empty($value)) {
+				// Set the datavalue and insert
+				$sqldata['text'] = $value;
+				$wpdb->insert($table_name, $sqldata);
+			}
+		}
+	} else {
+		// single record insert/update
+		$sqldata['text'] = trim(stripslashes($data['randomtext_text']));
+		if($randomtext_id)
+			$wpdb->update($table_name, $sqldata, array('randomtext_id'=>$randomtext_id));
+		else
+			$wpdb->insert($table_name, $sqldata);
+	}
 	
 }
 
