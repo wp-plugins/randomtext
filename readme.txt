@@ -37,7 +37,7 @@ Yes, you can use [randomtext] or [randomtext category="funny"] or even [randomte
 
 == Changelog ==
 
-= v0.2.4 2009-09-22 =
+= v0.2.4 2009-10-26 =
 
 * Added shortcode support
 
