@@ -4,7 +4,7 @@
 Plugin name: Random Text
 Plugin URI: http://www.pantsonhead.com/wordpress/randomtext/
 Description: A widget to display randomized text on your site
-Version: 0.2.3
+Version: 0.2.4
 Author: Greg Jackson
 Author URI: http://www.pantsonhead.com
 
@@ -183,5 +183,15 @@ register_activation_hook(__FILE__,'randomtext_install');
 
 if(is_admin())
 	include 'randomtext_admin.php';
+	
+	
+// Shortcode implementation
+function randomtext_shortcode($attribs) {
+	extract(shortcode_atts(array('category' => '', 'random' => FALSE, ), $attribs));
+	$randomtext = new randomtext;
+	return $randomtext->get_randomtext($category,$random);
+}
+
+add_shortcode('randomtext', 'randomtext_shortcode');
 
 ?>

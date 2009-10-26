@@ -28,7 +28,18 @@ Note: During installation, Random Text creates a new database table to store the
 1. Sidebar widget options
 2. Text management page
 
+== Frequently Asked Questions ==
+
+= Can I use shortcodes? =
+
+Yes, you can use [randomtext] or [randomtext category="funny"] or even [randomtext category="funny" random="1"].
+
+
 == Changelog ==
+
+= v0.2.4 2009-09-22 =
+
+* Added shortcode support
 
 = v0.2.3 2009-09-22 =
 
