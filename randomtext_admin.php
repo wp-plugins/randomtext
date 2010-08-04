@@ -130,7 +130,7 @@ function randomtext_list() {
 		$status = ($row->visible=='yes') ? 'visible' : 'hidden';
 		$bytes = strlen($row->text);
 		if(strlen($row->text) > 200)
-			$row->text = trim(substr($row->text,0,350)).'...';
+			$row->text = trim(mb_substr($row->text,0,350,'UTF-8')).'...';
 		echo '<tr'.$alt.'>
 		<td>'.$row->randomtext_id.'</td>
 		<td>'.esc_html($row->text).'</td>

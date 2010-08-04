@@ -4,11 +4,11 @@
 Plugin name: Random Text
 Plugin URI: http://www.pantsonhead.com/wordpress/randomtext/
 Description: A widget to display randomized text on your site
-Version: 0.2.4
+Version: 0.2.5
 Author: Greg Jackson
 Author URI: http://www.pantsonhead.com
 
-Copyright 2009  Greg Jackson  (email : greg@pantsonhead.com)
+Copyright 2010  Greg Jackson  (email : greg@pantsonhead.com)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@ class randomtext extends WP_Widget {
 		else
 			$sql .= ' ORDER BY timestamp, randomtext_id LIMIT 1 ';
 		$row = $wpdb->get_row($sql);
-		$snippet = $row->text;
+		$snippet = do_shortcode($row->text);
 		
 		// update the timestamp of the row we just seleted (used by rotator, not by random)
 		if(!$random AND intval($row->randomtext_id)) {
