@@ -4,7 +4,7 @@
 Plugin name: Random Text
 Plugin URI: http://www.pantsonhead.com/wordpress/randomtext/
 Description: A widget to display randomized text on your site
-Version: 0.2.5
+Version: 0.2.6
 Author: Greg Jackson
 Author URI: http://www.pantsonhead.com
 
@@ -38,7 +38,6 @@ class randomtext extends WP_Widget {
 	function get_randomtext($category='', $random=false) {
 		global $wpdb;
 		$table_name = $wpdb->prefix . 'randomtext';
-		
 	  $sql = 'SELECT randomtext_id, text FROM '. $table_name." WHERE visible='yes' ";
 		$sql .= ($category!='') ? " AND category = '$category'" : '' ;
 		if($random)
@@ -46,13 +45,16 @@ class randomtext extends WP_Widget {
 		else
 			$sql .= ' ORDER BY timestamp, randomtext_id LIMIT 1 ';
 		$row = $wpdb->get_row($sql);
-		$snippet = do_shortcode($row->text);
 		
 		// update the timestamp of the row we just seleted (used by rotator, not by random)
 		if(!$random AND intval($row->randomtext_id)) {
 			$sql = 'UPDATE '.$table_name.' SET timestamp = Now() WHERE randomtext_id = '.intval($row->randomtext_id);
 			$wpdb->query($sql);
 		}
+		
+		// now we can safely render shortcodes without self recursion (unless there is only one item containing [randomtext] shortcode - don't do that, it's just silly!)
+		$snippet = do_shortcode($row->text);
+		
 		return $snippet;
 	}
 
