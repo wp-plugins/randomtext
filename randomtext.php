@@ -4,11 +4,11 @@
 Plugin name: Random Text
 Plugin URI: http://www.pantsonhead.com/wordpress/randomtext/
 Description: A widget to display randomized text on your site
-Version: 0.2.6
+Version: 0.2.7
 Author: Greg Jackson
 Author URI: http://www.pantsonhead.com
 
-Copyright 2010  Greg Jackson  (email : greg@pantsonhead.com)
+Copyright 2011  Greg Jackson  (email : greg@pantsonhead.com)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

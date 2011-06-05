@@ -3,11 +3,12 @@
 add_action('admin_menu', 'randomtext_menu');
 
 function randomtext_menu() {
-  add_options_page('Random Text', 'Random Text', 8, 'randomtext', 'randomtext_options');
+  add_options_page('Random Text', 'Random Text', 'update_plugins', 'randomtext', 'randomtext_options');
 }
 
 function randomtext_options() {
-	switch($_GET['action']){
+	$action = isset($_GET['action']) ? $_GET['action'] : false;
+	switch($action){
 		case 'new' :
 			randomtext_edit();
 			break;
@@ -42,10 +43,10 @@ function randomtext_list() {
 	$table_name = $wpdb->prefix . 'randomtext';
 	$pageURL = 'options-general.php?page=randomtext';
 	$perpage = 20;
-	$cat=$_GET['cat'];
-	$author_id = intval($_GET['author_id']);
-	
-	$paged = intval($_GET['paged']);
+	$cat = isset($_GET['cat']) ? $_GET['cat'] : false;
+	$author_id = isset($_GET['author_id']) ? intval($_GET['author_id']) : 0;
+	$where = '';
+	$paged = isset($_GET['paged']) ? intval($_GET['paged']) : 0;
 	$paged = $paged ? $paged : 1;
 	$startrow = ($paged-1)*$perpage;
 	
@@ -92,7 +93,7 @@ function randomtext_list() {
 	}
 	
 	$item_range = $lastitem<2 ? $lastitem : ($startrow+1).'-'.$lastitem;
-	
+	$paging = '';
 	?>
 <div class="wrap">
 	<?php echo randomtext_pagetitle(); ?>
@@ -120,7 +121,7 @@ function randomtext_list() {
 	</tr></thead>
 	<tbody>
 <?php		
-
+	$alt = '';
 	foreach($rows as $row) {
 		$alt = ($alt) ? '' : ' class="alternate"'; // stripey :)
 		if(!isset($author[$row->user_id])){
@@ -166,6 +167,10 @@ function randomtext_edit($randomtext_id=0) {
 		$row = $wpdb->get_row($sql);
 		if(!$row)
 			$error_text = '<h2>The requested entry was not found.</h2>';
+	} else {
+		$row = new stdClass();
+		$row->text = '';
+		$row->visible = 'yes';
 	}
 	echo randomtext_pagetitle($title); 
 	
@@ -185,15 +190,9 @@ function randomtext_edit($randomtext_id=0) {
 	echo '</select></p>
 		<p><label for="randomtext_category_new">New Category: </label><input type="text" id="randomtext_category_new" name="randomtext_category_new"></p>';
 		
-		if($row->visible == 'no') { 
-			$checked_no = 'checked="checked"'; 
-		} else { 
-			$checked_yes = 'checked="checked"';
-		}
-		
 		echo '<h3>Is visible.</h3>
-			<p><label for="randomtext_visible_yes"><input type="radio" id="randomtext_visible_yes" name="randomtext_visible" value="yes" '.$checked_yes.' /> Yes</label>&nbsp;&nbsp;&nbsp;&nbsp;
-			<label for="randomtext_visible_no"><input type="radio" id="randomtext_visible_no" name="randomtext_visible" value="no" '.$checked_no.' /> No</label></p>';
+			<p><label for="randomtext_visible_yes"><input type="radio" id="randomtext_visible_yes" name="randomtext_visible" value="yes" '.checked($row->visible,'yes',false).' /> Yes</label>&nbsp;&nbsp;&nbsp;&nbsp;
+			<label for="randomtext_visible_no"><input type="radio" id="randomtext_visible_no" name="randomtext_visible" value="no" '.checked($row->visible,'no',false).' /> No</label></p>';
 		if(!$randomtext_id) {
 			// don't offer Bulk Insert on edit
 			echo '<h3>Use Bulk Insert</h3>
@@ -224,7 +223,8 @@ function randomtext_save($data) {
 	$sqldata['visible'] = $data['randomtext_visible'];
 	
 	// check for "Bulk Insert"
-	if ($data['randomtext_bulkinsert'] == 'yes') {
+	$do_bulkinsert = isset($data['randomtext_bulkinsert']) ? $data['randomtext_bulkinsert'] : 'no';
+	if ($do_bulkinsert == 'yes') {
 		// Split the data by carriage returns
 		$lines = preg_split("/[\n|\r]/", trim(stripslashes($data['randomtext_text'])));
 		foreach ($lines as $key=>$value) {
