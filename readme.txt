@@ -34,8 +34,17 @@ Note: During installation, Random Text creates a new database table to store the
 
 Yes, you can use [randomtext] or [randomtext category="funny"] or even [randomtext category="funny" random="1"].
 
+= What about template tags? = 
+
+You can use something like this, where 'category' is the group you wish to select items from.
+< ?php randomtext('category'); ?>
+
 
 == Changelog ==
+
+= v0.2.8 2011-06-15 =
+
+* Fixed pagination issues on admin page.
 
 = v0.2.7 2011-06-05 =
 

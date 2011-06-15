@@ -68,32 +68,17 @@ function randomtext_list() {
 		
 	$author = array();
 	
-	$lastitem = $startrow+count($rows);
+	$num_pages = 1+floor($totalrows/$perpage);
 	
-	
-	// Make pagination links
-	if($startrow) {
-		if($paged > 1) {
-			$paging = '<a href="'.$pageURL.$page_params.'&paged='.($paged-1).'" class="prev page-numbers">&laquo;</a>';
-			if($lastitem == $totalrows)
-				$paging .= '<a href="'.$pageURL.$page_params.'&paged='.($paged-2).'" class="page-numbers">'.($paged-2).'</a> ';
-			$paging .= '<a href="'.$pageURL.$page_params.'&paged='.($paged-1).'" class="page-numbers">'.($paged-1).'</a> 
-				<span class="page-numbers current">'.$paged.'</span> ';
-		}
-	}
-	if($lastitem < $totalrows) {
-		if($paged==1)
-			$paging = '<span class="page-numbers current">1</span>
-			<a href="'.$pageURL.$page_params.'&paged=2" class="page-numbers">2</a>
-			<a href="'.$pageURL.$page_params.'&paged=3" class="page-numbers">3</a>
-			<a href="'.$pageURL.$page_params.'&paged=2" class="next page-numbers">&raquo;</a>';
-		else 
-			$paging .=  '<a href="'.$pageURL.$page_params.'&paged='.($paged+1).'" class="page-numbers">'.($paged+1).'</a>
-			<a href="'.$pageURL.$page_params.'&paged='.($paged+1).'" class="next page-numbers">&raquo;</a>';
-	}
-	
-	$item_range = $lastitem<2 ? $lastitem : ($startrow+1).'-'.$lastitem;
-	$paging = '';
+	$paging = paginate_links( array(
+		'base' => add_query_arg( 'paged', '%#%' ),
+		'format' => '',
+		'prev_text' => __('&laquo;'),
+		'next_text' => __('&raquo;'),
+		'total' => $num_pages,
+		'current' => $paged
+		));
+
 	?>
 <div class="wrap">
 	<?php echo randomtext_pagetitle(); ?>
