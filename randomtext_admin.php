@@ -1,5 +1,7 @@
 <?php
 
+$randomtext_adminurl = admin_url().'options-general.php?page=randomtext';
+
 add_action('admin_menu', 'randomtext_menu');
 
 function randomtext_menu() {
@@ -7,6 +9,11 @@ function randomtext_menu() {
 }
 
 function randomtext_options() {
+	if($_POST) {
+		// process the posted data and display summary page - not pretty :(
+		randomtext_save($_POST);
+	}
+
 	$action = isset($_GET['action']) ? $_GET['action'] : false;
 	switch($action){
 		case 'new' :
@@ -39,17 +46,13 @@ function randomtext_error($text='An undefined error has occured.') {
 }
  
 function randomtext_list() {
-	global $wpdb, $user_ID;
+	global $wpdb, $user_ID, $randomtext_adminurl;
 	$table_name = $wpdb->prefix . 'randomtext';
-	$pageURL = 'options-general.php?page=randomtext';
-	$perpage = 20;
+	$pageURL = $randomtext_adminurl;
 	$cat = isset($_GET['cat']) ? $_GET['cat'] : false;
 	$author_id = isset($_GET['author_id']) ? intval($_GET['author_id']) : 0;
 	$where = '';
-	$paged = isset($_GET['paged']) ? intval($_GET['paged']) : 0;
-	$paged = $paged ? $paged : 1;
-	$startrow = ($paged-1)*$perpage;
-	
+
 	if($cat) {
 		$where = " WHERE category = '$cat'";
 		$page_params = '&cat='.urlencode($cat);
@@ -58,26 +61,45 @@ function randomtext_list() {
 		$where = " WHERE user_id = $author_id";
 		$page_params .= '&author_id='.$author_id;
 	}
+	
+	// pagination related
+
 	$item_count = $wpdb->get_row("Select count(*) items FROM $table_name $where");
 	if(isset($item_count->items)) {
 		$totalrows = 	$item_count->items;
 	} else {
 		echo '<h3>Achtung! The expected database table "<i>'.$table_name.'</i>" does not appear to exist.</h3>';
 	}
-	$rows = $wpdb->get_results("SELECT * FROM $table_name $where ORDER BY randomtext_id LIMIT $startrow, $perpage");
-		
-	$author = array();
 	
+	$perpage = 20;
+	$paged = isset($_GET['paged']) ? intval($_GET['paged']) : 0;
+	$paged = $paged ? $paged : 1;
+
 	$num_pages = 1+floor($totalrows/$perpage);
+
+	if($paged > $num_pages) { $paged = $num_pages; }
+	
+	$del_paged = ($paged > 1) ? '&paged='.$paged : '';	 // so we stay on the current page if we delete an item
 	
 	$paging = paginate_links( array(
-		'base' => add_query_arg( 'paged', '%#%' ),
-		'format' => '',
+		'base' => $pageURL.$page_params.'%_%', // add_query_arg( 'paged', '%#%' ),
+		'format' => '&paged=%#%',
 		'prev_text' => __('&laquo;'),
 		'next_text' => __('&raquo;'),
 		'total' => $num_pages,
 		'current' => $paged
 		));
+	
+	// now load the data to display
+
+	$startrow = ($paged-1)*$perpage;	
+	$rows = $wpdb->get_results("SELECT * FROM $table_name $where ORDER BY randomtext_id LIMIT $startrow, $perpage");
+	$item_range = count($rows);
+	if($item_range>1) {
+		$item_range = ($startrow+1).' - '.($startrow+$item_range);
+	}
+	
+	$author = array();
 
 	?>
 <div class="wrap">
@@ -123,7 +145,7 @@ function randomtext_list() {
 		<td><a href="'.$pageURL.'&cat='.$row->category.'">'.$row->category.'</a><br />'.$status.'</td>
 		<td class="author column-author"><a href="'.$pageURL.'&author_id='.$row->user_id.'">'.$author[$row->user_id].'</a><br />'.$bytes.' bytes</td>
 		<td><a href="'.$pageURL.'&action=edit&id='.$row->randomtext_id.'">Edit</a><br />';
-		$del_link = wp_nonce_url($pageURL.'&action=delete&id='.$row->randomtext_id, 'randomtext_delete' . $row->randomtext_id);
+		$del_link = wp_nonce_url($pageURL.$del_paged.'&action=delete&id='.$row->randomtext_id, 'randomtext_delete' . $row->randomtext_id);
 		echo '<a onclick="if ( confirm(\'You are about to delete post #'.$row->randomtext_id.'\n Cancel to stop, OK to delete.\') ) { return true;}return false;" href="'.$del_link.'" title="Delete this post" class="submitdelete">Delete</a>';
 		echo '</td></tr>';		
 	}
@@ -133,14 +155,7 @@ function randomtext_list() {
 }
 
 function randomtext_edit($randomtext_id=0) {
-
-	if($_POST) {
-		// process the posted data and display summary page - not pretty :(
-		randomtext_save($_POST);
-		randomtext_list();
-		die();
-	}
-
+	
 	echo '<div class="wrap">';
 	$title = '- Add New';
 	if($randomtext_id) {
@@ -163,7 +178,9 @@ function randomtext_edit($randomtext_id=0) {
 		echo '<h3>The requested entry was not found.</h3>';
 	} else {
 	// display the add/edit form 
-	echo '<form method="post" action="'.$_SERVER["REQUEST_URI"].'">
+	global $randomtext_adminurl;
+	
+	echo '<form method="post" action="'.$randomtext_adminurl.'">
 		'.wp_nonce_field('randomtext_edit' . $randomtext_id).'
 		<input type="hidden" id="randomtext_id" name="randomtext_id" value="'.$randomtext_id.'">
 		<h3>Text To Display</h3>
@@ -189,7 +206,7 @@ function randomtext_edit($randomtext_id=0) {
 			</div>
 			</form>
 			
-			<p>Return to <a href="options-general.php?page=randomtext">Random Text summary page</a>.</p>';
+			<p>Return to <a href="'.$randomtext_adminurl.'">Random Text summary page</a>.</p>';
 	}
   echo '</div>';	
 }
@@ -228,7 +245,7 @@ function randomtext_save($data) {
 		else
 			$wpdb->insert($table_name, $sqldata);
 	}
-	
+
 }
 
 function randomtext_delete($id) {

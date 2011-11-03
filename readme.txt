@@ -3,7 +3,7 @@ Contributors: pantsonhead
 Donate link: http://www.amazon.co.uk/gp/registry/1IX1RH4LFSY4W
 Tags: widget, plugin, sidebar, random, text, quotes
 Requires at least: 2.8
-Tested up to: 3.1.2
+Tested up to: 3.2.1
 Stable tag: trunk
 
 Store and display random/rotated text by category in sidebar widget or templates.
@@ -41,6 +41,10 @@ You can use something like this, where 'category' is the group you wish to selec
 
 
 == Changelog ==
+
+= v0.2.9 2011-11-03 =
+
+* Fixed pagination issues on admin page (again).
 
 = v0.2.8 2011-06-15 =
 
