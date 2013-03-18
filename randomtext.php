@@ -4,7 +4,7 @@
 Plugin name: Random Text
 Plugin URI: http://www.pantsonhead.com/wordpress/randomtext/
 Description: A widget to display randomized text on your site
-Version: 0.2.9
+Version: 0.3.0
 Author: Greg Jackson
 Author URI: http://www.pantsonhead.com
 
@@ -91,7 +91,7 @@ class randomtext extends WP_Widget {
 	  $category = htmlspecialchars($instance['category']);
 		$pretext = htmlspecialchars($instance['pretext']);
 		$posttext = htmlspecialchars($instance['posttext']);
-		${'random_'.intval($instance['random'])} = ' SELECTED';
+		if(!isset($instance['random'])) { $instance['random'] = 0; }
   
 		echo '<p>
 				<label for="'.$this->get_field_name('title').'">Title: </label> 
@@ -112,8 +112,8 @@ class randomtext extends WP_Widget {
 			<p>
 				<label for="'.$this->get_field_name('random').'">Selection: </label> 
 				<select id="'.$this->get_field_id('random').'" name="'.$this->get_field_name('random').'">
-				<option value="1" '.$random_1.'>Random</option>
-				<option value="0" '.$random_0.'>Rotation</option>
+				<option value="1" '.selected(intval($instance['random']),1).'>Random</option>
+				<option value="0" '.selected(intval($instance['random']),0).'>Rotation</option>
 				</select><br/>
 				<span class="description">Note: Random can be more intensive with large record sets, and some items may never appear.</span>
 			</p>'; 
@@ -183,9 +183,10 @@ function randomtext_install() {
 add_action('widgets_init', 'randomtext_init');
 register_activation_hook(__FILE__,'randomtext_install');
 
-if(is_admin())
+if(is_admin()) {
+	$plugin_basename = plugin_basename(__FILE__); 
 	include 'randomtext_admin.php';
-	
+}
 	
 // Shortcode implementation
 function randomtext_shortcode($attribs) {

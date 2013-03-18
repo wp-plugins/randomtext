@@ -8,6 +8,15 @@ function randomtext_menu() {
   add_options_page('Random Text', 'Random Text', 'update_plugins', 'randomtext', 'randomtext_options');
 }
 
+// Add settings link on plugin page
+function randomtext_settings_link($links) { 
+  $settings_link = '<a href="options-general.php?page=randomtext">Settings</a>'; 
+  array_unshift($links, $settings_link); 
+  return $links; 
+}
+add_filter("plugin_action_links_$plugin_basename", 'randomtext_settings_link' );
+
+
 function randomtext_options() {
 	if($_POST) {
 		// process the posted data and display summary page - not pretty :(
@@ -51,7 +60,7 @@ function randomtext_list() {
 	$pageURL = $randomtext_adminurl;
 	$cat = isset($_GET['cat']) ? $_GET['cat'] : false;
 	$author_id = isset($_GET['author_id']) ? intval($_GET['author_id']) : 0;
-	$where = '';
+	$where = $page_params = '';
 
 	if($cat) {
 		$where = " WHERE category = '$cat'";
@@ -255,5 +264,6 @@ function randomtext_delete($id) {
 	$sql = "DELETE FROM $table_name WHERE randomtext_id = $id";
 	$wpdb->query($sql);
 }
+
 
 ?>
